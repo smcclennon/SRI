@@ -142,7 +142,7 @@ def replicate(target_file):
 
 def unique_filename(old_filename):
     if len(old_filename) > 120:  # If filename over 120 chars
-        old_filename = old_filename.replace(project_title+'-', '')[0:30] + basename_ext  # Trim the filename to 30 chars
+        old_filename = old_filename.replace(project_title+'-', '')[0:30]  # Trim the filename to 30 chars
     new_filename = old_filename + str(binascii.b2a_hex(os.urandom(3))).replace("'", '') + identifier2  # Create unique name, convert from b'binary' to 'string'
     return new_filename  # 'file -SRI-b2ad5e2.py'
 
