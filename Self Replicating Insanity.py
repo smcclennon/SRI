@@ -99,7 +99,7 @@ basename = os.path.basename(absolute_filename)  # 'C:\folder\file.py' -> 'file.p
 basename_no_ext = os.path.splitext(basename)[0]  # 'file.py' -> 'file'
 basename_ext = os.path.splitext(basename)[1]  # 'file.py' -> '.py'
 
-identifier1 = basename_no_ext + '-' + project_title + '-'  # 'file -SRI-'
+identifier1 = f'{basename_no_ext}-{project_title}-'
 identifier2 = basename_ext  # '.py'
 
 if os.name == 'nt':
@@ -142,21 +142,24 @@ def replicate(target_file):
 
 def unique_filename(old_filename):
     if len(old_filename) > 120:  # If filename over 120 chars
-        old_filename = old_filename.replace(project_title+'-', '')[0:30]  # Trim the filename to 30 chars
-    new_filename = old_filename + str(binascii.b2a_hex(os.urandom(3))).replace("'", '') + identifier2  # Create unique name, convert from b'binary' to 'string'
-    return new_filename  # 'file -SRI-b2ad5e2.py'
+        old_filename = old_filename.replace(f'{project_title}-', '')[:30]
+    return (
+        old_filename
+        + str(binascii.b2a_hex(os.urandom(3))).replace("'", '')
+        + identifier2
+    )
 
 def find_duplicates(identifier):
     identifier_len = len(str(identifier))  # Get length of identifier (filename)
-    identifier_len = int(identifier_len / 2)
-    identifier = identifier[0:identifier_len]  # Trim the identifier in half
-    return glob.glob(identifier + '*')  # All duplicated files
+    identifier_len //= 2
+    identifier = identifier[:identifier_len]
+    return glob.glob(f'{identifier}*')
 
 if __name__ == '__main__':
     duplicate_list = find_duplicates(identifier1)
     if len(duplicate_list) < 2:  # If there is only one SRI script (no replications, yet)
         print(logo('ACRO_SRI'))
-        for character in f"Insane Mode: ":  # Animated print
+        for character in "Insane Mode: ":  # Animated print
             print(character, end='', flush=True)
             sleep(0.1)
         sleep(0.4)
